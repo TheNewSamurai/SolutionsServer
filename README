@@ -1,0 +1,8 @@
+SOLUTIONS STORE RHOCONNECT CLIENT
+
+THE PURPOSE OF THIS CODE IS TO SYNCHRONIZE DATA BETWEEN A HEROKU RAILS SERVICE AND A RHOMOBILE CLIENT APPLICATION
+
+PRODUCT - Created Sync currently with one problem. If a new product is added on a device and synchronized it is 
+added to the backend but is removed from the device. However, the entry will appear back on the device after interval poll.
+
+CLIENT - TO BE IMPLEMENTED.
