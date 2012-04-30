@@ -1,7 +1,9 @@
 #Sources 
 :sources: 
+  Partner: 
+    :poll_interval: 0
   Product: 
-    :poll_interval: 300
+    :poll_interval: 0
  
 :development: 
   :syncserver: http://localhost:9292/api/application/

@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'json'
-require 'rest-client'
+require 'rest_client'
 
 class Product < SourceAdapter
     def initialize(source) 
@@ -19,13 +19,14 @@ class Product < SourceAdapter
       #   "1"=>{"name"=>"Acme", "industry"=>"Electronics"},
       #   "2"=>{"name"=>"Best", "industry"=>"Software"}
       # }
+      puts "!!!!!!!!!!!!!!!!!!!!!!!!!!PROCEEDING QUERY!!!!!!!!!!!!!!!!!!!!!!!"
       rest_result = RestClient.get("#{@base}.json").body
        
       if rest_result.code != 200
-        raise SourceAdapterException new("Error Connecting")
+        raise SourceAdapterException.new("Error Connecting")
       end
       
-      # puts rest_result
+      #puts rest_result
       parsed = JSON.parse(rest_result)
   
       @result={}
@@ -43,17 +44,26 @@ class Product < SourceAdapter
    
     def create(create_hash)
       # TODO: Create a new record in your backend data source
-      res = RestClient.post(@base,:product => create_hash)                                           
-      
-      JSON.parse(
-        RestClient.get("#{res.headers[:location]}.json").body)["id"]                      
+      puts "!!!!!!!!!!!!!!!!!!!!!!!!!!PROCEEDING CREATE!!!!!!!!!!!!!!!!!!!!!!!"
+      @result = {"upc" => create_hash["upc"], "name" => create_hash["name"], "model" => create_hash["model"], "quantity" => create_hash["quantity"]}
+      res = RestClient.post(@base, create_hash.to_json, :content_type => :json, :accept => :json)                                       
+      #if rest_result.code != 200
+      #   raise SourceAdapterException.new("Error creating record.")
+      #end
+      puts "#{res.headers[:location]}.json"
+      JSON.parse(RestClient.get("#{res.headers[:location]}.json").body)["id"]                  
     end
    
     def update(update_hash)
       # TODO: Update an existing record in your backend data source
+      puts "!!!!!!!!!!!!!!!!!!!!!!!!!!PROCEEDING UPDATE!!!!!!!!!!!!!!!!!!!!!!!"
       obj_id = update_hash['id']
+      #puts update_hash
         update_hash.delete('id')
-        RestClient.put("#{@base}/#{obj_id}",:product => update_hash)                                 
+      puts "#{@base}/#{obj_id}"
+        RestClient.put("#{@base}/#{obj_id}", update_hash.to_json, :content_type => :json, :accept => :json)
+          #:product => update_hash)                                 
+      puts "2"
     end
    
     def delete(delete_hash)
@@ -61,7 +71,13 @@ class Product < SourceAdapter
       # be sure to have a hash key and value for "object"
       # for now, we'll say that its OK to not have a delete operation
       # raise "Please provide some code to delete a single object in the backend application using the object_id"
-      RestClient.delete("#{@base}/#{delete_hash['id']}")
+      puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!DELETING AN ENTRY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      puts delete_hash['id']
+      #puts "#{@base}/#{delete_hash['id']}"
+      rest_result = RestClient.delete("#{@base}/#{delete_hash['id']}.json")
+      #if rest_result.code != 200
+      #  raise SourceAdapterException.new("Error deleting record.")
+      #end
     end
    
     def logoff
