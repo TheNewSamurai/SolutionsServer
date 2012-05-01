@@ -1,7 +1,5 @@
 #Sources 
 :sources: 
-  Partner: 
-    :poll_interval: 0
   Product: 
     :poll_interval: 0
  
